@@ -5,6 +5,15 @@ findspark.init("/usr/lib/spark-current")
 
 import pyspark
 
+# Set Executor Env
+conf = pyspark.SparkConf().setAppName("Spark DARIMA App").setExecutorEnv('ARROW_PRE_0_15_IPC_FORMAT', '1')
+spark = pyspark.sql.SparkSession.builder.config(conf=conf).getOrCreate()
+spark.sparkContext.addPyFile("darima.zip")
+
+# Enable Arrow-based columnar data transfers
+spark.conf.set("spark.sql.execution.arrow.enabled", "true")
+spark.conf.set("spark.sql.execution.arrow.fallback.enabled", "true")
+
 import os, sys, time
 from datetime import timedelta
 
@@ -19,24 +28,14 @@ from pyspark.sql.types import *
 from pyspark.sql import functions
 from pyspark.sql.functions import udf, pandas_udf, PandasUDFType, monotonically_increasing_id
 
-from model import sarima2ar_model, darima_model
+from darima.model import sarima2ar_model, darima_model
+from darima.dlsa import dlsa_mapreduce
+from darima.forecast import forecast_darima, darima_forec
+from darima.evaluation import eval_func, model_eval
 
-from dlsa import dlsa_mapreduce
-
-from forecast import forecast_darima, darima_forec
-
-from evaluation import model_eval
 
 import rpy2.robjects as robjects
 from rpy2.robjects import numpy2ri
-
-# Set Executor Env
-conf = pyspark.SparkConf().setAppName("Spark DARIMA App").setExecutorEnv('ARROW_PRE_0_15_IPC_FORMAT', '1')
-spark = pyspark.sql.SparkSession.builder.config(conf=conf).getOrCreate()
-
-# Enable Arrow-based columnar data transfers
-spark.conf.set("spark.sql.execution.arrow.enabled", "true")
-spark.conf.set("spark.sql.execution.arrow.fallback.enabled", "true")
 
 
 ##----------------------------------------------------------------------------------------
@@ -48,11 +47,12 @@ spark.conf.set("spark.sql.execution.arrow.fallback.enabled", "true")
 using_data = "real_hdfs" # ["simulated_pdf", "real_pdf", "real_hdfs"
 model_saved_file_name = '~/xiaoqian-darima/darima/result/darima_model_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.pkl'
 coef_saved_file_name = '~/xiaoqian-darima/darima/result/darima_coef_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.csv'
+forec_saved_file_name = '~/xiaoqian-darima/darima/result/darima_forec_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.csv'
 
 # Model settings
 #-----------------------------------------------------------------------------------------
 period = 24 # Seasonality
-tol = 2000
+tol = 2
 order = [0,0,0]; seasonal = [0,0,0]
 max_p = 5; max_q = 5; max_P = 2; max_Q = 2
 max_order = 5; max_d = 2; max_D = 1
@@ -60,13 +60,12 @@ allowmean = True; allowdrift = True
 method = "CSS" # Fitting method
 approximation = False; stepwise = True
 parallel = False; num_cores = 2
-h = 2879; level = 95
+h = 28; level = 95
 
 # Settings for using real hdfs data
 #-----------------------------------------------------------------------------------------
 file_train_path = ['/user/student/xiaoqian-darima/darima/data/NEMASSBOST_train.csv'] # HDFS file
 file_test_path = ['/user/student/xiaoqian-darima/darima/data/NEMASSBOST_test.csv'] # HDFS file
-forec_saved_file_name = '~/xiaoqian-darima/darima/result/darima_forec_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.csv'
 
 usecols_x = ['time']
 
@@ -151,30 +150,38 @@ schema_beta = StructType(
 @pandas_udf(schema_beta, PandasUDFType.GROUPED_MAP)
 def darima_model_udf(sample_df):
     return darima_model(sample_df = sample_df, Y_name = Y_name, period = period, tol = tol,
-                order = order, seasonal = seasonal, 
-                max_p = max_p, max_q = max_q, max_P = max_P, max_Q = max_Q, 
+                order = order, seasonal = seasonal,
+                max_p = max_p, max_q = max_q, max_P = max_P, max_Q = max_Q,
                 max_order = max_order, max_d = max_d, max_D = max_D,
-                allowmean = allowmean, allowdrift = allowdrift, method = method, 
-                approximation = approximation, stepwise = stepwise, 
+                allowmean = allowmean, allowdrift = allowdrift, method = method,
+                approximation = approximation, stepwise = stepwise,
                 parallel = parallel, num_cores = num_cores)
 
 # Partition the data and run the UDF
 #-----------------------------------------------------------------------------------------
+data_sdf_i = data_sdf_i.filter(data_sdf_i.partition_id < 3)
 model_mapped_sdf = data_sdf_i.groupby("partition_id").apply(darima_model_udf)
 
+model_mapped_sdf.select("par_id","coef", "Sig_invMcoef", "c0", "c1", "pi1", "pi2").show()
+print("darima model finished !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+test = model_mapped_sdf.toPandas()
+print("toPandas finished !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 ##----------------------------------------------------------------------------------------
 ## AGGREGATING THE MODEL ESTIMATES
 ##----------------------------------------------------------------------------------------
 
 # sample_size = model_mapped_sdf.count()
-sample_size = sum(sample_size)
+sample_size = data_sdf_i.count()
 
 # Obtain Sig_tilde and Theta_tilde
 tic_mapred = time.perf_counter()
 Sig_Theta = dlsa_mapreduce(model_mapped_sdf, sample_size) # Pandas DataFrame
 time_mapred = time.perf_counter() - tic_mapred
 
+Sig_Theta.head()
+print("DLSA finished !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 ##----------------------------------------------------------------------------------------
 ## FORECASTING
@@ -185,29 +192,33 @@ out_Sigma = Sig_Theta[usecoef_ar]
 
 tic_model_forec = time.perf_counter()
 
-out_model_forec = darima_forec(Theta = out_Theta, Sigma = out_Sigma, 
-                          x = data_train, period = period, 
+out_model_forec = darima_forec(Theta = out_Theta, Sigma = out_Sigma,
+                          x = data_train, period = period,
                           h = h, level = level)
 
 time_model_forec = time.perf_counter() - tic_model_forec
 
+print("FORECASTING finished !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 ##----------------------------------------------------------------------------------------
 ## EVALUATION
 ##----------------------------------------------------------------------------------------
 data_test = data_test_sdf.toPandas()["demand"]
+data_test = data_test[0:h,]
 pred = out_model_forec["pred"]
 lower = out_model_forec["lower"]
 upper = out_model_forec["upper"]
 
 tic_model_eval = time.perf_counter()
 
-out_model_eval = model_eval(x = data_train, xx = data_test, period = period, 
+out_model_eval = model_eval(x = data_train, xx = data_test, period = period,
                             pred = pred, lower = lower, upper = upper, level = level)
 
 time_model_eval = time.perf_counter() - tic_model_eval
 
 score = out_model_eval.mean(axis=0)
+
+print("EVALUATION finished !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 ##----------------------------------------------------------------------------------------
 ## PRINT OUTPUT
@@ -249,8 +260,8 @@ print(out_time.to_string(index=False))
 print("\nDLSA Coefficients:\n")
 print(out_Theta.to_string(index=False))
 
-print("\nForecasting scores:\n")
-print("mase, smape, msis\n")
+print("\nForecasting scores:")
+print("\nmase, smape, msis\n")
 print(score.to_string(index=False))
 
 print("End")

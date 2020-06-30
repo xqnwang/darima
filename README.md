@@ -1,2 +1,0 @@
-# darima
-Distributed ARIMA Models

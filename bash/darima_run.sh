@@ -12,7 +12,7 @@ MODEL_DESCRIPTION=$1
 
 # Tiny executors: one executor per core
 EC=1
-EM=6g
+EM=3g
 
 # MODEL_FILE
 MODEL_FILE=darima
@@ -25,18 +25,18 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # for i in {256..4..-4}
 tic0=`date +"%Y-%m-%d-%T"`
-for executors in 20
+for executors in 30
 do
     tic=`date +%s`
     PYSPARK_PYTHON=/usr/local/bin/python3.7 spark-submit  \
                   --master yarn  \
-                  --driver-memory 30g  \
+                  --driver-memory 50g  \
                   --executor-memory ${EM}  \
                   --num-executors ${executors}  \
                   --executor-cores ${EC}  \
                   --conf spark.rpc.message.maxSize=2000  
                   #--py-files $DIR/dep.zip  \
-                  $DIR/${MODEL_FILE}.py  \
+                  $DIR/../${MODEL_FILE}.py  \
                   > ${OUTPATH}${MODEL_DESCRIPTION}_${MODEL_FILE}.NE${executors}.EC${EC}_${tic0}.out 2> ${OUTPATH}${MODEL_DESCRIPTION}_${MODEL_FILE}.NE${executors}.EC${EC}_${tic0}.log
     toc=`date +%s`
     runtime=$((toc-tic))
