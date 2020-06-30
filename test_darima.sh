@@ -12,6 +12,7 @@ MODEL_DESCRIPTION=$1
 EC=1
 EM=6g
 EXECUTORS=64
+
 # MODEL_FILE
 MODEL_FILE=test_darima
 OUTPATH=/home/student/.xiaoqian/darima/result/
@@ -30,10 +31,10 @@ PYSPARK_PYTHON=/usr/local/bin/python3.7 spark-submit  \
               --driver-memory 10g  \
               --executor-memory ${EM}  \
               --executor-cores ${EC}  \
-              --conf spark.rpc.message.maxSize=2000  \
               --num-executors ${EXECUTORS} \
+              --conf spark.rpc.message.maxSize=2000  \
               $DIR/${MODEL_FILE}.py
-              # > ${OUTPATH}${MODEL_DESCRIPTION}_${MODEL_FILE}.NE${executors}.EC${EC}_${tic0}.out 2> ${OUTPATH}${MODEL_DESCRIPTION}_${MODEL_FILE}.NE${executors}.EC${EC}_${tic0}.log
+              > ${OUTPATH}${MODEL_DESCRIPTION}_${MODEL_FILE}.NE${executors}.EC${EC}_${tic0}.out 2> ${OUTPATH}${MODEL_DESCRIPTION}_${MODEL_FILE}.NE${executors}.EC${EC}_${tic0}.log
 toc=`date +%s`
 runtime=$((toc-tic))
 echo ${MODEL_FILE}.NE${executors}.EC${EC} finished, "Time used (s):" $runtime
