@@ -1,14 +1,9 @@
 #! /bin/bash
 
 # https://help.aliyun.com/document_detail/28124.html
-
 # Fat EXECUTORS: one executor per node
 # EC=16
 # EM=30g
-
-#zip -r dep.zip model.py dlsa.py forecast.py evaluation.py R/sarima2ar_model.R R/forecast_darima.R R/eval_func.R
-
-MODEL_DESCRIPTION=$1
 
 # Tiny EXECUTORS: one executor per core
 EC=1
@@ -16,6 +11,7 @@ EM=2g
 EXECUTORS=64
 
 # MODEL_FILE
+MODEL_DESCRIPTION=$1
 MODEL_FILE=run_darima
 OUTPATH=/home/student/.xiaoqian/darima/result/
 
@@ -34,7 +30,7 @@ PYSPARK_PYTHON=/usr/local/bin/python3.7 spark-submit  \
               --driver-memory 10g  \
               --executor-memory ${EM}  \
               --executor-cores ${EC}  \
-              --num-EXECUTORS ${EXECUTORS} \
+              --num-executors ${EXECUTORS} \
               --conf spark.rpc.message.maxSize=2000 \
               $DIR/${MODEL_FILE}.py \
 	      > ${OUTPATH}${MODEL_DESCRIPTION}_${MODEL_FILE}.NE${EXECUTORS}.EC${EC}_${tic0}.out 2> ${OUTPATH}${MODEL_DESCRIPTION}_${MODEL_FILE}.NE${EXECUTORS}.EC${EC}_${tic0}.log

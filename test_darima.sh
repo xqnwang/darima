@@ -6,14 +6,13 @@
 # EC=16
 # EM=30g
 
-MODEL_DESCRIPTION=$1
-
 # Tiny executors: one executor per core
 EC=1
 EM=6g
 EXECUTORS=64
 
 # MODEL_FILE
+MODEL_DESCRIPTION=$1
 MODEL_FILE=test_darima
 OUTPATH=/home/student/.xiaoqian/darima/result/
 
