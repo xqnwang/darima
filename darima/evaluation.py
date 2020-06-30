@@ -10,6 +10,7 @@ import warnings
 
 import rpy2.robjects as robjects
 from rpy2.robjects import numpy2ri
+import rpy2
 
 from pyspark.sql.types import *
 from pyspark.sql.functions import pandas_udf, PandasUDFType
@@ -21,8 +22,9 @@ from pyspark.sql.functions import pandas_udf, PandasUDFType
 # robjects.r.source("~/xiaoqian-darima/darima//R/eval_func.R", verbose=False)
 ## robjects.r.source(os.path.dirname(os.path.abspath(__file__)) + "/R/eval_func.R", verbose=False)
 ## robjects.r.source("darima/R/eval_func.R", verbose=False)
-robjects.r.source(exprs=zipfile.ZipFile(pathlib.Path(__file__).parents[1]).open("darima/R/eval_func.R").read().decode("utf-8"), verbose=False)
 
+eval_func_rcode = zipfile.ZipFile(pathlib.Path(__file__).parents[1]).open("darima/R/eval_func.R").read().decode("utf-8")
+robjects.r.source(exprs=rpy2.rinterface.parse(eval_func_rcode), verbose=False)
 eval_func=robjects.r['eval_func']
 ##--------------------------------------------------------------------------------------
 # Python version

@@ -44,8 +44,8 @@ spark.conf.set("spark.sql.execution.arrow.fallback.enabled", "true")
 # General settings
 #-----------------------------------------------------------------------------------------
 using_data = "real_hdfs" # ["simulated_pdf", "real_pdf", "real_hdfs"
-model_saved_file_name = '~/xiaoqian-darima/darima/result/darima_model_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.pkl'
-coef_saved_file_name = '~/xiaoqian-darima/darima/result/darima_coef_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.csv'
+model_saved_file_name = 'result/darima_model_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.pkl'
+coef_saved_file_name = 'result/darima_coef_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.csv'
 
 # Model settings
 #-----------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ h = 2879; level = 95
 #-----------------------------------------------------------------------------------------
 file_train_path = ['/user/student/xiaoqian-darima/darima/data/NEMASSBOST_train.csv'] # HDFS file
 file_test_path = ['/user/student/xiaoqian-darima/darima/data/NEMASSBOST_test.csv'] # HDFS file
-forec_saved_file_name = '~/xiaoqian-darima/darima/result/darima_forec_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.csv'
+forec_saved_file_name = 'result/darima_forec_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.csv'
 
 usecols_x = ['time']
 

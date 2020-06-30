@@ -13,6 +13,7 @@ import warnings
 
 import rpy2.robjects as robjects
 from rpy2.robjects import numpy2ri
+import rpy2
 
 from pyspark.sql.types import *
 from pyspark.sql.functions import pandas_udf, PandasUDFType
@@ -38,7 +39,8 @@ from pyspark.sql.functions import pandas_udf, PandasUDFType
 #     return(out)
 
 
-robjects.r.source(exprs=zipfile.ZipFile(pathlib.Path(__file__).parents[1]).open("darima/R/sarima2ar_model.R").read().decode("utf-8"), verbose=False)
+sarima2ar_model_rcode = zipfile.ZipFile(pathlib.Path(__file__).parents[1]).open("darima/R/sarima2ar_model.R").read().decode("utf-8")
+robjects.r.source(exprs=rpy2.rinterface.parse(sarima2ar_model_rcode), verbose=False)
 sarima2ar_model=robjects.r['sarima2ar']
 
 ##--------------------------------------------------------------------------------------

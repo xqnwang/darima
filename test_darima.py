@@ -45,9 +45,9 @@ from rpy2.robjects import numpy2ri
 # General settings
 #-----------------------------------------------------------------------------------------
 using_data = "real_hdfs" # ["simulated_pdf", "real_pdf", "real_hdfs"
-model_saved_file_name = '~/xiaoqian-darima/darima/result/darima_model_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.pkl'
-coef_saved_file_name = '~/xiaoqian-darima/darima/result/darima_coef_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.csv'
-forec_saved_file_name = '~/xiaoqian-darima/darima/result/darima_forec_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.csv'
+model_saved_file_name = 'result/darima_model_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.pkl'
+coef_saved_file_name = 'result/darima_coef_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.csv'
+forec_saved_file_name = 'result/darima_forec_NEMASSBOST_' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.csv'
 
 # Model settings
 #-----------------------------------------------------------------------------------------

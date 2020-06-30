@@ -10,6 +10,7 @@ import warnings
 
 import rpy2.robjects as robjects
 from rpy2.robjects import numpy2ri
+import rpy2
 
 from pyspark.sql.types import *
 from pyspark.sql.functions import pandas_udf, PandasUDFType
@@ -22,7 +23,8 @@ from pyspark.sql.functions import pandas_udf, PandasUDFType
 ## robjects.r.source(os.path.dirname(os.path.abspath(__file__)) + "/R/forecast_darima.R", verbose=False)
 
 ##robjects.r.source("darima/R/forecast_darima.R", verbose=False)
-robjects.r.source(exprs=zipfile.ZipFile(pathlib.Path(__file__).parents[1]).open("darima/R/forecast_darima.R").read().decode("utf-8"), verbose=False)
+forecast_darima_rcode = zipfile.ZipFile(pathlib.Path(__file__).parents[1]).open("darima/R/forecast_darima.R").read().decode("utf-8")
+robjects.r.source(exprs=rpy2.rinterface.parse(forecast_darima_rcode), verbose=False)
 
 forecast_darima=robjects.r['forecast.darima']
 
