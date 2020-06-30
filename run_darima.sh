@@ -2,7 +2,7 @@
 
 # https://help.aliyun.com/document_detail/28124.html
 
-# Fat executors: one executor per node
+# Fat EXECUTORS: one executor per node
 # EC=16
 # EM=30g
 
@@ -10,7 +10,7 @@
 
 MODEL_DESCRIPTION=$1
 
-# Tiny executors: one executor per core
+# Tiny EXECUTORS: one executor per core
 EC=1
 EM=2g
 EXECUTORS=64
@@ -34,13 +34,13 @@ PYSPARK_PYTHON=/usr/local/bin/python3.7 spark-submit  \
               --driver-memory 10g  \
               --executor-memory ${EM}  \
               --executor-cores ${EC}  \
-              --num-executors ${EXECUTORS} \
+              --num-EXECUTORS ${EXECUTORS} \
               --conf spark.rpc.message.maxSize=2000 \
-              $DIR/${MODEL_FILE}.py
-	      > ${OUTPATH}${MODEL_DESCRIPTION}_${MODEL_FILE}.NE${executors}.EC${EC}_${tic0}.out 2> ${OUTPATH}${MODEL_DESCRIPTION}_${MODEL_FILE}.NE${executors}.EC${EC}_${tic0}.log
+              $DIR/${MODEL_FILE}.py \
+	      > ${OUTPATH}${MODEL_DESCRIPTION}_${MODEL_FILE}.NE${EXECUTORS}.EC${EC}_${tic0}.out 2> ${OUTPATH}${MODEL_DESCRIPTION}_${MODEL_FILE}.NE${EXECUTORS}.EC${EC}_${tic0}.log
 
 toc=`date +%s`
 runtime=$((toc-tic))
-echo ${MODEL_FILE}.NE${executors}.EC${EC} finished, "Time used (s):" $runtime
+echo ${MODEL_FILE}.NE${EXECUTORS}.EC${EC} finished, "Time used (s):" $runtime
 
 exit 0;
