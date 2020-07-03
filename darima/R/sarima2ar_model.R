@@ -87,7 +87,7 @@ sarima2ar <- function(x, period = 1, tol = 500L,
     fit <- forecast::Arima(x, order = order, seasonal = seasonal, method = method, 
                            include.mean = allowmean, include.drift = allowdrift)
   }
-  sigma2 <- fit$sigma2
+  sigma2 <- c(fit$sigma2)
   
   # extract coefficents of sarima model
   isEmpty <- function(x) {
@@ -114,12 +114,13 @@ sarima2ar <- function(x, period = 1, tol = 500L,
                              m = m, tol = tol)
   
   # var.coef
-  vc_i <- diag(length(ar.coef))
-  colnames(vc_i) <- rownames(vc_i) <- names(ar.coef)
-  vc <- sigma2 * vc_i
+  #vc_i <- diag(length(ar.coef))
+  #colnames(vc_i) <- rownames(vc_i) <- names(ar.coef)
+  #vc <- sigma2 * vc_i
   
   # return
-  return(list(coef = ar.coef, var.coef = vc))
+  #return(list(coef = ar.coef, var.coef = vc))
+  return(list(coef = ar.coef, sigma2 = sigma2))
   
 }
 

@@ -143,8 +143,7 @@ for i in usecoef_ar:
 
 schema_beta = StructType(
     [StructField('par_id', IntegerType(), True),
-     StructField('coef', DoubleType(), True),
-     StructField('Sig_invMcoef', DoubleType(), True)]
+     StructField('Sig_inv_value', DoubleType(), True)]
     + schema_fields)
 
 @pandas_udf(schema_beta, PandasUDFType.GROUPED_MAP)
@@ -161,21 +160,18 @@ def darima_model_udf(sample_df):
 #-----------------------------------------------------------------------------------------
 data_sdf_i = data_sdf_i.filter(data_sdf_i.partition_id < 3)
 model_mapped_sdf = data_sdf_i.groupby("partition_id").apply(darima_model_udf)
-
-model_mapped_sdf.select("par_id","coef", "Sig_invMcoef", "c0", "c1", "pi1", "pi2").show()
-print("darima model finished !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
-test = model_mapped_sdf.toPandas()
-print("toPandas finished !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+tic_map = time.perf_counter()
+model_mapped_sdf.show()
+time_map = time.perf_counter() - tic_map
+print("MAP MODEL finished !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 ##----------------------------------------------------------------------------------------
 ## AGGREGATING THE MODEL ESTIMATES
 ##----------------------------------------------------------------------------------------
 
-# sample_size = model_mapped_sdf.count()
+# Obtain Sig_tilde and Theta_tilde
 sample_size = data_sdf_i.count()
 
-# Obtain Sig_tilde and Theta_tilde
 tic_mapred = time.perf_counter()
 Sig_Theta = dlsa_mapreduce(model_mapped_sdf, sample_size) # Pandas DataFrame
 time_mapred = time.perf_counter() - tic_mapred
@@ -235,6 +231,7 @@ out_time = pd.DataFrame({
     "partition_num": partition_num,
     # "time_2sdf": time_2sdf,
     # "time_repartition": time_repartition,
+    "time_map": time_map,
     "time_mapred": time_mapred,
     # "time_dlsa": time_dlsa,
     "time_model_forec": time_model_forec,
