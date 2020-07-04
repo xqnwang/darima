@@ -167,9 +167,9 @@ def darima_model_udf(sample_df):
 # Partition the data and run the UDF
 #-----------------------------------------------------------------------------------------
 model_mapped_sdf = data_sdf_i.groupby("partition_id").apply(darima_model_udf)
-tic_map = time.perf_counter()
-model_mapped_sdf.show()
-time_map = time.perf_counter() - tic_map
+#tic_map = time.perf_counter()
+#model_mapped_sdf.show()
+#time_map = time.perf_counter() - tic_map
 
 
 ##----------------------------------------------------------------------------------------
@@ -232,7 +232,7 @@ out_time = pd.DataFrame({
     "partition_num": partition_num,
     # "time_2sdf": time_2sdf,
     # "time_repartition": time_repartition,
-    "time_map": time_map,
+    #"time_map": time_map,
     "time_mapred": time_mapred,
     # "time_dlsa": time_dlsa,
     "time_model_forec": time_model_forec,
