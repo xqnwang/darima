@@ -9,9 +9,9 @@ DARIMA is designed to facilitate forecasting ultra-long time series by utilizing
 See [`darima`](darima) for developed functions used for implementing DARIMA models.
 - [`model.py`](darima/model.py) : Train ARIMA models for each subseries and convert the trained models into AR representations (Mapper).
 - [`dlsa.py`](darima/dlsa.py) : Combine the local estimators obtained in Mapper by minimizing the global loss function (Reducer).
-- [`forecast.py`](darima/forecast.py) : Forecast the next $H$ observations by utilizing the combined estimators.
+- [`forecast.py`](darima/forecast.py) : Forecast the next H observations by utilizing the combined estimators.
 - [`evaluation.py`](darima/evaluation.py) : Calculate the forecasting accuracy in terms as MASE, sMAPE and MSIS.
-- [`R`](darima/R) : \proglang{R} functions designed for modeling, combining and forecasting. [rpy2](https://pypi.org/project/rpy2/) is needed as an interface to use R from Python.
+- [`R`](darima/R) : R functions designed for modeling, combining and forecasting. [rpy2](https://pypi.org/project/rpy2/) is needed as an interface to use R from Python.
 
 # System requirements
 
@@ -55,5 +55,5 @@ or simply run
 
 # References
 
-- [Xiaoqian Wang](https://xqnwang.rbind.io), [Yanfei Kang](https://yanfei.site), [Rob J Hyndman](https://robjhyndman.com), & [Feng Li](http://feng.li/) (2020) Distributed ARIMA models for ultra-long time series. [_Working Paper_]()
+- [Xiaoqian Wang](https://xqnwang.rbind.io), [Yanfei Kang](https://yanfei.site), [Rob J Hyndman](https://robjhyndman.com), & [Feng Li](http://feng.li/) (2020) Distributed ARIMA models for ultra-long time series. [_Working Paper_]().
 
