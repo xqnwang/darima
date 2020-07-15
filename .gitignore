@@ -1,2 +1,13 @@
+# Out files
 **/result/
 *.out
+
+# Test pyfiles
+test_darima.py
+test_source.py
+test_pandas_udf.py
+
+# Test bash files
+test_darima.sh
+test_source.sh
+test_pandas_udf.sh
