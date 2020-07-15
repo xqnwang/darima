@@ -22,26 +22,10 @@ from pyspark.sql.functions import pandas_udf, PandasUDFType
 ##--------------------------------------------------------------------------------------
 # R version
 ##--------------------------------------------------------------------------------------
-#robjects.r.source("~/xiaoqian-darima/darima//R/sarima2ar_model.R", verbose=False)
-# robjects.r.source(exprs=zipfile.ZipFile(pathlib.Path(__file__).parents[1]).open("darima/R/test_fun.R").read().decode("utf-8"), verbose=True)
-# ## robjects.r.source("darima/R/test_fun.R", verbose=False)
-# test_fun=robjects.r['test.fun']
-
-# def test_py(dat):
-#     x = dat["v"].values
-#     numpy2ri.activate()
-#     out_r = test_fun(robjects.FloatVector(x))
-#     numpy2ri.deactivate()
-#     out_rb = robjects.FloatVector(out_r)
-#     out_mean = pd.DataFrame(np.array(out_rb).reshape(1, 1), columns=['mvalue'])
-#     par_id = pd.DataFrame(np.arange(1).reshape(1, 1), columns=['id'])
-#     out = pd.concat([out_mean, par_id],1)
-#     return(out)
-
-
 sarima2ar_model_rcode = zipfile.ZipFile(pathlib.Path(__file__).parents[1]).open("darima/R/sarima2ar_model.R").read().decode("utf-8")
 robjects.r.source(exprs=rpy2.rinterface.parse(sarima2ar_model_rcode), verbose=False)
 sarima2ar_model=robjects.r['sarima2ar']
+
 
 ##--------------------------------------------------------------------------------------
 # Python version - Simplified output version

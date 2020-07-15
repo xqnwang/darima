@@ -1,3 +1,4 @@
+# Forecasting according to the trained DARIMA model
 suppressPackageStartupMessages(require("forecast"))
 suppressPackageStartupMessages(require("quantmod"))
 suppressPackageStartupMessages(require("magrittr"))

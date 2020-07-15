@@ -1,6 +1,7 @@
 suppressPackageStartupMessages(require("forecast"))
 suppressPackageStartupMessages(require("polynom"))
 
+# The function `ar_coefficients` aims to obtain the coefficients of the AR representation of a SARIMA model
 ar_coefficients <- function(ar = 0, d = 0L, ma = 0, 
                             sar = 0, D = 0L, sma = 0, 
                             mean = 0, drift = 0, 
@@ -62,7 +63,7 @@ ar_coefficients <- function(ar = 0, d = 0L, ma = 0,
 }
 
 
-
+# The function `sarima2ar` aims to fit an ARIMA model for input series and convert it into an AR representation 
 sarima2ar <- function(x, period = 1, tol = 500L, 
                       order = c(0L, 0L, 0L), seasonal = c(0L, 0L, 0L), 
                       max.p = 5, max.q = 5, max.P = 2, max.Q = 2, 

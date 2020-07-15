@@ -1,3 +1,4 @@
+# Calculate the forecasting accuracy by considering MASE, sMAPE and MSIS as the measures 
 eval_func <- function(x, xx, period, pred, lower, upper, level){
   freq <- period
   scaling <- mean(abs(diff(as.vector(x), freq)))

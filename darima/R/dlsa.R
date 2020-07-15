@@ -1,6 +1,7 @@
 suppressPackageStartupMessages(require("dplyr"))
 suppressPackageStartupMessages(require("magrittr"))
 
+# The function `dlsa.comb` aims to combine the local estimators of subseries by minimizing a global loss function 
 dlsa.comb <- function(model_mapped, sample_size){
   # model_mapped: par_id, coef, Sig_invMcoef, Sig_inv(p)
   if ("par_id" %in% colnames(model_mapped)){

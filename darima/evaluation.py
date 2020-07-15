@@ -19,13 +19,11 @@ from pyspark.sql.functions import pandas_udf, PandasUDFType
 ##--------------------------------------------------------------------------------------
 # R version
 ##--------------------------------------------------------------------------------------
-# robjects.r.source("~/xiaoqian-darima/darima//R/eval_func.R", verbose=False)
-## robjects.r.source(os.path.dirname(os.path.abspath(__file__)) + "/R/eval_func.R", verbose=False)
-## robjects.r.source("darima/R/eval_func.R", verbose=False)
-
 eval_func_rcode = zipfile.ZipFile(pathlib.Path(__file__).parents[1]).open("darima/R/eval_func.R").read().decode("utf-8")
 robjects.r.source(exprs=rpy2.rinterface.parse(eval_func_rcode), verbose=False)
 eval_func=robjects.r['eval_func']
+
+
 ##--------------------------------------------------------------------------------------
 # Python version
 ##--------------------------------------------------------------------------------------
@@ -43,9 +41,6 @@ def model_eval(x, xx, period,
     pred = pred
     lower = lower
     upper = upper
-
-    # Creating rpy2 vectors
-    # robjects.FloatVector(x)
 
     # Forecasting
     #--------------------------------------

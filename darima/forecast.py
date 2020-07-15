@@ -21,12 +21,10 @@ from pyspark.sql.functions import pandas_udf, PandasUDFType
 ##--------------------------------------------------------------------------------------
 # robjects.r.source("~/xiaoqian-darima/darima//R/forecast_darima.R", verbose=False)
 ## robjects.r.source(os.path.dirname(os.path.abspath(__file__)) + "/R/forecast_darima.R", verbose=False)
-
-##robjects.r.source("darima/R/forecast_darima.R", verbose=False)
 forecast_darima_rcode = zipfile.ZipFile(pathlib.Path(__file__).parents[1]).open("darima/R/forecast_darima.R").read().decode("utf-8")
 robjects.r.source(exprs=rpy2.rinterface.parse(forecast_darima_rcode), verbose=False)
-
 forecast_darima=robjects.r['forecast.darima']
+
 
 ##--------------------------------------------------------------------------------------
 # Python version
@@ -43,9 +41,6 @@ def darima_forec(Theta, Sigma, x, period, h = 1, level = 95):
     #--------------------------------------
     Theta = Theta.values
     x = x.values
-
-    # Creating rpy2 vectors
-    # robjects.FloatVector(x)
 
     # Forecasting
     #--------------------------------------

@@ -1,3 +1,4 @@
+# Save data as csv
 load("/Users/wangxiaoqian/Git/Git-xqnwang/dforecast/RData/gefcom2017.RData")
 library(magrittr)
 

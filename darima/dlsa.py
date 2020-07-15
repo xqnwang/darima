@@ -7,44 +7,6 @@ import pandas as pd
 from pyspark.sql.types import *
 from pyspark.sql.functions import pandas_udf, PandasUDFType
 
-#import rpy2.robjects as robjects
-#from rpy2.robjects import numpy2ri
-#from rpy2.robjects.packages import importr
-#from rpy2.robjects import pandas2ri
-#from rpy2.robjects.conversion import localconverter
-#import rpy2
-
-
-##--------------------------------------------------------------------------------------
-# R version
-##--------------------------------------------------------------------------------------
-#dlsa_rcode = zipfile.ZipFile(pathlib.Path(__file__).parents[1]).open("darima/R/dlsa.R").read().decode("utf-8")
-#robjects.r.source(exprs=rpy2.rinterface.parse(dlsa_rcode), verbose=False)
-#dlsa_comb=robjects.r['dlsa.comb']
-
-##--------------------------------------------------------------------------------------
-# Python version1 - by rpy2
-##--------------------------------------------------------------------------------------
-#def dlsa_mapreduce(model_mapped_sdf, sample_size):
-#    '''
-#    MapReduce for partitioned data with given model
-#    Calculate global estimator
-#    '''
-#    model_mapped_pdf = model_mapped_sdf.toPandas()
-#
-#    # From pandas to R
-#    with localconverter(robjects.default_converter + pandas2ri.converter):
-#        model_mapped_r = robjects.conversion.py2rpy(model_mapped_pdf)
-#
-#    # DLSA
-#    out_r = dlsa_comb(model_mapped_r, sample_size)
-#
-#    # From R to pandas
-#    with localconverter(robjects.default_converter + pandas2ri.converter):
-#        out = robjects.conversion.rpy2py(out_r)
-#
-#    return out
-
 
 ##--------------------------------------------------------------------------------------
 # Python version - Simplified output version
