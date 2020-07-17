@@ -1,4 +1,4 @@
-# `DARIMA`
+# `darima`
 
 Distributed ARIMA Models implemented with Apache Spark
 
