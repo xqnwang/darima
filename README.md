@@ -55,5 +55,5 @@ or simply run
 
 # References
 
-- [Xiaoqian Wang](https://xqnwang.rbind.io), [Yanfei Kang](https://yanfei.site), [Rob J Hyndman](https://robjhyndman.com), & [Feng Li](http://feng.li/) (2020) Distributed ARIMA models for ultra-long time series. [_Working Paper_]().
+- [Xiaoqian Wang](https://xqnwang.rbind.io), [Yanfei Kang](https://yanfei.site), [Rob J Hyndman](https://robjhyndman.com), & [Feng Li](http://feng.li/) (2020) Distributed ARIMA models for ultra-long time series.
 
