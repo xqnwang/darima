@@ -51,7 +51,39 @@ predict.ar <- function(Theta, sigma2, x, n.ahead = 1L, se.fit = TRUE){
   
 }
 
-
+#' Forecasting using the combined estimators of DARIMA (Distributed ARIMA) models
+#' 
+#' Return forecasts and other information for DARIMA (Distributed ARIMA) models.
+#' 
+#' @param Theta A vector of the DARIMA coefficients.
+#' @param sigma2 The standard deviation of the residuals for the DARIMA model.
+#' @param x A vector or ts of the observed time-series values.
+#' @param period The length of the seasonal period.
+#' @param h Number of periods for forecasting.
+#' @param level Confidence level for prediction intervals.
+#' @param fan If TRUE, level is set to seq(51, 99, by=3). 
+#' This is suitable for fan plots.
+#' @param lambda Box-Cox transformation parameter. If lambda="auto", 
+#' then a transformation is automatically selected using BoxCox.lambda. 
+#' The transformation is ignored if NULL. Otherwise, data transformed 
+#' before model is estimated.
+#' @param biasadj Use adjusted back-transformed mean for Box-Cox 
+#' transformations. If transformed data is used to produce forecasts and 
+#' fitted values, a regular back transformation will result in median forecasts. 
+#' If biasadj is TRUE, an adjustment will be made to produce mean forecasts 
+#' and fitted values.
+#' 
+#' @return A list with the elements having the following structure
+#' \item{level}{Confidence level for prediction intervals}
+#' \item{mean}{Point forecasts as a time series}
+#' \item{se}{Estimated standard errors of the prediction error}
+#' \item{lower}{Lower limits for prediction intervals}
+#' \item{upper}{Upper limits for prediction intervals}
+#' \item{fitted}{Fitted values}
+#' \item{residuals}{Residuals from the fitted model. 
+#' That is x minus fitted values.}
+#' 
+#' @export
 forecast.darima <- function(Theta, sigma2, x, period, h = 1L, level = c(80, 95), fan = FALSE,
                             lambda = NULL, biasadj = FALSE){
   x <- ts(x, frequency = period)
