@@ -37,7 +37,7 @@ Run the [PySpark](https://spark.apache.org/docs/latest/api/python/index.html) co
 ```sh
   ./bash/run_darima.sh
 ```
-or simply run 
+or simply run
 ```py
   PYSPARK_PYTHON=/usr/local/bin/python3.7 ARROW_PRE_0_15_IPC_FORMAT=1 spark-submit ./run_darima.py
 ```
@@ -48,12 +48,11 @@ Run the R code to forecast the time series of the GEFCom2017 by utilizing the `a
 ```sh
   ./bash/auto_arima.sh
 ```
-or simply run 
+or simply run
 ```r
   Rscript auto_arima.R
 ```
 
 # References
 
-- [Xiaoqian Wang](https://xqnwang.rbind.io), [Yanfei Kang](https://yanfei.site), [Rob J Hyndman](https://robjhyndman.com), & [Feng Li](http://feng.li/) (2022). Distributed ARIMA models for ultra-long time series (in press). International Journal of Forecasting. [*_Working Paper_*](https://arxiv.org/abs/2007.09577).
-
+- [Xiaoqian Wang](https://xqnwang.rbind.io), [Yanfei Kang](https://yanfei.site), [Rob J Hyndman](https://robjhyndman.com), & [Feng Li](https://feng.li/) (2022) Distributed ARIMA models for ultra-long time series. International Journal of Forecasting [DOI: 10.1016/j.ijforecast.2022.05.001](https://doi.org/10.1016/j.ijforecast.2022.05.001).
