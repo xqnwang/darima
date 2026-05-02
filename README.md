@@ -13,6 +13,26 @@ See [`darima`](darima) for developed functions used for implementing DARIMA mode
 - [`evaluation.py`](darima/evaluation.py) : Calculate the forecasting accuracy in terms as MASE, sMAPE and MSIS.
 - [`R`](darima/R) : R functions designed for modeling, combining and forecasting. [rpy2](https://pypi.org/project/rpy2/) is needed as an interface to use R from Python.
 
+# Modern `dstats` Interface
+
+This directory keeps the original DARIMA implementation and examples for
+reference. New development is moving to the unified `dstats` package at
+<https://github.com/feng-li/dstats>.
+
+The migrated Spark 4 interface is available from `dstats.darima` and uses the
+current PySpark `applyInPandas` API. Automatic ARIMA selection is handled in
+Python with `statsforecast.models.AutoARIMA`, so the new interface does not
+require `rpy2` or R `forecast::auto.arima`.
+
+Typical usage in the new package is:
+
+```py
+from dstats.darima import darima_forecast
+from dstats.darima import darima_mapreduce
+from dstats.darima import fit_darima_partitions
+from dstats.darima import model_eval
+```
+
 # System requirements
 
 - `Spark >= 2.3.1`
